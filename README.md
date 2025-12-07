@@ -1,6 +1,6 @@
 # Inxtinct Assignment 
 ###  ~By Priyanshu Kumar Rai
-### Demo- https://drive.google.com/drive/folders/1m4Rt9AMQJ48j-BsautLSo7uzq6WRxcy-
+### Demo- https://www.loom.com/share/b64ce434bba94ff78f5f987faf5cdeb2
 
 This is AI-powered application that leverages the **Model Context Protocol (MCP)** to connect a Large Language Model (LLM) with various local and remote tools. It features a modern **Streamlit** user interface that acts as a central hub for chatting with an agent capable of tracking expenses, checking weather, and interacting with social media.
 
