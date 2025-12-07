@@ -6,7 +6,6 @@ mcp = FastMCP("weather")
 @mcp.tool()
 async def get_weather(city: str) -> str:
     """Get the current weather for a city."""
-    # 1. Geocoding
     async with httpx.AsyncClient() as client:
         geo_url = "https://geocoding-api.open-meteo.com/v1/search"
         geo_params = {"name": city, "count": 1, "language": "en", "format": "json"}
@@ -14,7 +13,6 @@ async def get_weather(city: str) -> str:
         geo_data = geo_resp.json()
 
         if not geo_data.get("results"):
-            # Try splitting by comma (e.g. "New York, USA" -> "New York")
             if "," in city:
                 simple_city = city.split(",")[0].strip()
                 geo_params["name"] = simple_city
@@ -30,7 +28,6 @@ async def get_weather(city: str) -> str:
         name = location["name"]
         country = location.get("country", "")
 
-        # 2. Weather
         weather_url = "https://api.open-meteo.com/v1/forecast"
         weather_params = {
             "latitude": lat,
@@ -44,7 +41,6 @@ async def get_weather(city: str) -> str:
         temp = current.get("temperature_2m")
         code = current.get("weather_code")
         
-        # Weather codes: https://open-meteo.com/en/docs
         conditions = "Unknown"
         if code == 0: conditions = "Clear sky"
         elif code in [1, 2, 3]: conditions = "Partly cloudy"

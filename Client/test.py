@@ -32,7 +32,7 @@ SERVERS = {
         "fastmcp",
         "fastmcp",
         "run",
-        "C:\\Users\\priya\\OneDrive\\Desktop\\current\\MCP\\demo-server-1\\main.py"
+        "C:\\Users\\priya\\OneDrive\\Desktop\\Inxtinct\\DatabaseServer\\main.py"
       ]
     },
     "weather-server": {
@@ -46,7 +46,7 @@ SERVERS = {
         "httpx",
         "fastmcp",
         "run",
-        "C:\\Users\\priya\\OneDrive\\Desktop\\current\\MCP\\weather-server\\main.py"
+        "C:\\Users\\priya\\OneDrive\\Desktop\\Inxtinct\\WeatherServer\\main.py"
       ]
     }
 }
@@ -68,16 +68,11 @@ async def main():
         temperature=0
     )
     
-    # Bind tools to LLM
     llm_with_tools = llm.bind_tools(tools)
-    
-    # Test prompt - must request at least 10 tweets (tool schema requirement)
-    # prompt = "Add 1000 rupess I spent in buying cloths yesterday."
     prompt = "Whats the wheater right now in new york, usa?"
     
     response = await llm_with_tools.ainvoke(prompt)
     
-    # Check if LLM called any tools
     if not getattr(response, "tool_calls", None):
         print("\nLLM Reply:", response.content)
         return
