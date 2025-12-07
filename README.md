@@ -1,8 +1,83 @@
 # Inxtinct Assignment 
 ###  ~By Priyanshu Kumar Rai
-### Demo- https://www.loom.com/share/b64ce434bba94ff78f5f987faf5cdeb2
+### 📹 Demo - https://www.loom.com/share/b64ce434bba94ff78f5f987faf5cdeb2
 
-This is AI-powered application that leverages the **Model Context Protocol (MCP)** to connect a Large Language Model (LLM) with various local and remote tools. It features a modern **Streamlit** user interface that acts as a central hub for chatting with an agent capable of tracking expenses, checking weather, and interacting with social media.
+This is an AI-powered application that leverages the **Model Context Protocol (MCP)** to connect a Large Language Model (LLM) with various local and remote tools. It features a modern **Streamlit** user interface that acts as a central hub for chatting with an agent capable of tracking expenses, checking weather, and interacting with social media.
+
+---
+
+## 🎯 What's Inside This Project?
+
+This project demonstrates a complete **multi-server MCP architecture** with three main components working together:
+
+### 1. 🖥️ **MCP Servers** (Backend Services)
+
+The application includes **three MCP servers** that expose tools to the LLM:
+
+#### **a) Database Server (Expense Tracker)**
+- **Location:** `DatabaseServer/`
+- **Technology:** FastMCP + FastAPI + SQLite
+- **MCP Tools Exposed:**
+  - `add_expense` - Add new expenses with automatic categorization
+  - `list_expenses` - Retrieve expense history with filtering
+  - `summarize_expenses` - Get expense analytics and summaries
+- **FastAPI Endpoints:**
+  - `POST /expenses` - Create expense
+  - `GET /expenses` - List all expenses
+  - `GET /expenses/summary` - Get expense summary
+- **How it works:** The MCP server wraps FastAPI endpoints and exposes them as callable tools for the LLM
+
+#### **b) Weather Server**
+- **Location:** `WeatherServer/`
+- **Technology:** FastMCP + FastAPI + Open-Meteo API
+- **MCP Tools Exposed:**
+  - `get_forecast` - Get weather forecast for any location
+- **FastAPI Endpoints:**
+  - `GET /forecast` - Fetch weather data
+- **How it works:** Integrates with Open-Meteo API to provide real-time weather information via MCP
+
+#### **c) Twitter MCP Server** (External)
+- **Location:** External NPM package (`@enescinar/twitter-mcp`)
+- **Technology:** Node.js MCP Server
+- **MCP Tools Exposed:**
+  - `post_tweet` - Post tweets
+  - `search_tweets` - Search Twitter
+  - `get_user_timeline` - Fetch user tweets
+### 2. 🔌 **FastAPI Endpoints** (Direct HTTP Access)
+
+Each server also provides **direct HTTP access** for testing and debugging:
+
+**Database Server** (`http://
+
+### 3. 🤖 **MCP Client** (Streamlit Frontend)
+
+- **Location:** `Client/main.py`
+- **Technology:** Streamlit + LangChain + langchain-mcp-adapters
+- **Functionality:**
+  - **Connects to all MCP servers** using `MultiServerMCPClient`
+  - **Orchestrates LLM interactions** via LangChain + Groq
+  - **Provides conversational UI** for natural language requests
+  - **Automatic tool calling** - LLM decides which MCP tools to use
+
+**How the Client Works:**
+```
+User Input → Streamlit UI → LangChain Agent → Groq LLM → MCP Tools → Response
+```
+
+The client:
+1. Initializes connections to all MCP servers on startup
+2. Converts MCP tools to LangChain-compatible format
+3. Sends user queries to the Groq LLM
+4. LLM analyzes the query and calls appropriate MCP tools
+5. Results are displayed in the chat interface
+
+**Example Interactions:**
+- *"Add 500 rupees for lunch today"* → Calls `add_expense` tool
+- *"What's the weather in Paris?"* → Calls `get_forecast` tool
+- *"Show my expenses from last week"* → Calls `list_expenses` tool
+- *"Post a tweet saying hello"* → Calls `post_tweet` tool
+
+---
 
 ## 🏗 Architecture
 
