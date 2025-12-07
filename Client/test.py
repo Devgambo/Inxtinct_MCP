@@ -9,16 +9,6 @@ import os
 load_dotenv()
 
 SERVERS = { 
-    "manim-server": {
-      "transport": "stdio",
-      "command": "C:\\Users\\priya\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
-      "args": [
-        "C:\\Users\\priya\\OneDrive\\Desktop\\current\\MCP\\manim-mcp-server\\src\\manim_server.py"
-      ],
-      "env": {
-        "MANIM_EXECUTABLE": "C:\\Users\\priya\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\manim.exe"
-      }
-    },
     "twitter-mcp": {
       "transport": "stdio",
       "command": "npx",
@@ -27,10 +17,10 @@ SERVERS = {
         "@enescinar/twitter-mcp"
       ],
       "env": {
-        "API_KEY": "z3GFFcVBAYDQyZK9rjTRvLwWv",
-        "API_SECRET_KEY": "UIg06cGARg0tIdqxFlxr8D7ez7vnswmz2aH1602tgrPcSpNhVe",
-        "ACCESS_TOKEN": "1785618844029214720-xxwvhoiRSLc4ivHZQZjR7VKnXyfTyC",
-        "ACCESS_TOKEN_SECRET": "iNsfbIyAiF0071boJE1CTDF9luOVRvjTmSpp8n35PLcik"
+        "API_KEY": os.getenv("API_KEY"),
+        "API_SECRET_KEY": os.getenv("API_SECRET_KEY"),
+        "ACCESS_TOKEN": os.getenv("ACCESS_TOKEN"),
+        "ACCESS_TOKEN_SECRET": os.getenv("ACCESS_TOKEN_SECRET")
       }
     },
     "ExpenseTracker": {
