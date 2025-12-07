@@ -29,49 +29,179 @@ The project follows a multi-server MCP architecture:
 ## 📂 Project Structure
 
 ```
-Inxtinct/
+Inxtinct_MCP/
 ├── Client/
-│   └── main.py          # Main Streamlit application & MCP Client
+│   ├── main.py              # Main Streamlit application & MCP Client
+│   ├── test.py              # Testing utilities
+│   └── .env                 # Environment variables (create this)
 ├── DatabaseServer/
-│   ├── server.py        # FastAPI server for Expenses
-│   ├── main.py          # MCP Entrypoint
-│   └── expenses.db      # SQLite Database
+│   ├── server.py            # FastAPI server for Expenses
+│   ├── main.py              # MCP Entrypoint
+│   ├── categories.json      # Expense categories configuration
+│   └── expenses.db          # SQLite Database (auto-generated)
 ├── WeatherServer/
-│   ├── server.py        # FastAPI server for Weather
-│   └── main.py          # MCP Entrypoint
-└── pyproject.toml       # Project Dependencies
+│   ├── server.py            # FastAPI server for Weather
+│   └── main.py              # MCP Entrypoint
+├── pyproject.toml           # Project metadata & dependencies
+├── requirements.txt         # Python dependencies
+└── README.md                # This file
 ```
 
-## 🛠️ Setup & Usage
+## 🛠️ Setup & Installation
 
 ### Prerequisites
-*   Python 3.13+
-*   `uv` (Package manager)
-*   Node.js & `npx` (for Twitter MCP)
-*   Groq API Key
-*   Twitter API Keys (if using Twitter tools)
 
-### Environment Variables
-Create a `.env` file in the `Client/` directory with the following keys:
+Before you begin, ensure you have the following installed:
 
-```env
-GROQ_API_KEY=your_groq_api_key
-twitter api keys
-```
+*   **Python 3.13+** - [Download Python](https://www.python.org/downloads/)
+*   **uv** (Package manager) - Install via:
+    ```bash
+    # Windows (PowerShell)
+    powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+    
+    # macOS/Linux
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
+*   **Node.js 18+** and **npx** - [Download Node.js](https://nodejs.org/) (npx comes bundled)
+*   **Git** - [Download Git](https://git-scm.com/downloads)
 
-### Running the App
+### Step-by-Step Installation
 
-The application uses `uv` to manage dependencies and run the client.
+#### 1️⃣ Clone the Repository
 
 ```bash
-# Navigate to the Client directory
-cd Client
-
-# Run the Streamlit App
-uv run streamlit run main.py
+git clone https://github.com/Devgambo/Inxtinct_MCP.git
+cd Inxtinct_MCP
 ```
 
-*Note: The separate MCP servers (Database, Weather) are automatically started by the Client script as subprocesses.*
+#### 2️⃣ Install Dependencies
+
+Install all required Python packages using `uv`:
+
+```bash
+uv sync
+```
+
+Alternatively, if you prefer using pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+#### 3️⃣ Configure Environment Variables
+
+Create a `.env` file in the `Client/` directory with your API keys:
+
+```bash
+cd Client
+# Create .env file (Windows)
+New-Item .env -ItemType File
+
+# Create .env file (macOS/Linux)
+touch .env
+```
+
+Add the following configuration to your `.env` file:
+
+```env
+# Groq API Configuration (Required)
+GROQ_API_KEY=your_groq_api_key_here
+
+# Twitter API Configuration (Optional - only if using Twitter features)
+API_KEY=your_twitter_api_key
+API_SECRET_KEY=your_twitter_api_secret_key
+ACCESS_TOKEN=your_twitter_access_token
+ACCESS_TOKEN_SECRET=your_twitter_access_token_secret
+```
+
+**How to get API Keys:**
+- **Groq API Key**: Sign up at [console.groq.com](https://console.groq.com/)
+- **Twitter API Keys**: Create a developer account at [developer.twitter.com](https://developer.twitter.com/)
+
+#### 4️⃣ **IMPORTANT: Update Server Paths** ⚠️
+
+After cloning, you **MUST** update the absolute file paths in `Client/main.py` to match your local setup.
+
+Open `Client/main.py` and locate the `SERVERS` configuration (around lines 14-53). Update the paths in the `args` sections:
+
+**Before (Example paths):**
+```python
+"ExpenseTracker": {
+    "args": [
+        "run",
+        "--with",
+        "fastmcp",
+        "fastmcp",
+        "run",
+        "C:\\Users\\priya\\OneDrive\\Desktop\\Inxtinct\\DatabaseServer\\main.py",  # ← Change this
+    ]
+},
+"weather-server": {
+    "args": [
+        "run",
+        "--with",
+        "fastmcp",
+        "--with",
+        "httpx",
+        "fastmcp",
+        "run",
+        "C:\\Users\\priya\\OneDrive\\Desktop\\Inxtinct\\WeatherServer\\main.py"  # ← Change this
+    ]
+}
+```
+
+**After (Your actual paths):**
+```python
+# Replace with your actual project path
+# Windows example: C:\\Users\\YourUsername\\path\\to\\Inxtinct_MCP\\DatabaseServer\\main.py
+# macOS/Linux example: /home/yourusername/path/to/Inxtinct_MCP/DatabaseServer/main.py
+
+"ExpenseTracker": {
+    "args": [
+        "run",
+        "--with",
+        "fastmcp",
+        "fastmcp",
+        "run",
+        "YOUR_ABSOLUTE_PATH/DatabaseServer/main.py",  # Update this path
+    ]
+},
+"weather-server": {
+    "args": [
+        "run",
+        "--with",
+        "fastmcp",
+        "--with",
+        "httpx",
+        "fastmcp",
+        "run",
+        "YOUR_ABSOLUTE_PATH/WeatherServer/main.py"  # Update this path
+    ]
+}
+```
+
+**💡 Tip:** To get your current directory path:
+- **Windows PowerShell**: Run `Get-Location` or `pwd`
+- **macOS/Linux**: Run `pwd`
+
+### Running the Application
+
+Once setup is complete, navigate to the Client directory and start the app:
+
+```bash
+# From the project root
+cd Client
+
+# Run the Streamlit application
+uv run streamlit run main.py
+
+# Alternative (if using pip)
+streamlit run main.py
+```
+
+The application will open in your default browser at `http://localhost:8501`
+
+**Note:** The Database and Weather MCP servers are automatically started as subprocesses by the client. You don't need to run them separately.
 
 ## ✨ Features
 
@@ -81,6 +211,74 @@ uv run streamlit run main.py
 *   **Persistent Chat History**: Maintains context during the session.
 *   **Modern UI**: Dark-themed, fixed-layout interface with dedicated Tools sidebar.
 
-## Issues
+## 🐛 Troubleshooting
+
+### Common Issues and Solutions
+
+#### 1. ModuleNotFoundError or Import Errors
+**Problem:** Missing Python dependencies
+
+**Solution:**
+```bash
+# Reinstall dependencies
+uv sync
+
+# Or with pip
+pip install -r requirements.txt
+```
+
+#### 2. "GROQ_API_KEY not found" Error
+**Problem:** Environment variables not loaded
+
+**Solution:**
+- Verify `.env` file exists in `Client/` directory
+- Check that `GROQ_API_KEY` is correctly set in `.env`
+- Restart the Streamlit application
+
+#### 3. Server Connection Failed
+**Problem:** Incorrect server paths in `SERVERS` configuration
+
+**Solution:**
+- Double-check the absolute paths in `Client/main.py` match your system
+- Ensure paths use correct separators (`\\` for Windows, `/` for macOS/Linux)
+- Verify `DatabaseServer/main.py` and `WeatherServer/main.py` exist
+
+#### 4. Twitter Tools Not Working
+**Problem:** Missing or invalid Twitter API credentials
+
+**Solution:**
+- Twitter features are optional - the app will work without them
+- If needed, add all four Twitter API keys to your `.env` file
+- Verify credentials at [developer.twitter.com](https://developer.twitter.com/)
+
+#### 5. Port Already in Use
+**Problem:** Streamlit default port (8501) is occupied
+
+**Solution:**
+```bash
+# Specify a different port
+uv run streamlit run main.py --server.port 8502
+```
+
+#### 6. UV Command Not Found
+**Problem:** `uv` is not installed or not in PATH
+
+**Solution:**
+```bash
+# Reinstall uv (Windows PowerShell)
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Restart your terminal after installation
+```
+
+### Getting Help
+
+If you encounter issues not listed here:
+1. Check the terminal output for specific error messages
+2. Verify all prerequisites are installed correctly
+3. Ensure you're using Python 3.13 or higher: `python --version`
+4. Open an issue on [GitHub](https://github.com/Devgambo/Inxtinct_MCP/issues)
+
+## 📝 Notes
 
 * the compromised twitter api keys have been taken care of.
