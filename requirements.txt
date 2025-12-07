@@ -1,0 +1,7 @@
+streamlit
+python-dotenv
+langchain-mcp-adapters
+langchain-groq
+langchain-core
+fastmcp
+httpx
