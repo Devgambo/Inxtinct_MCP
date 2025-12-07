@@ -12,16 +12,6 @@ load_dotenv()
 
 # Server Configuration (Duplicated from test.py)
 SERVERS = { 
-    "manim-server": {
-      "transport": "stdio",
-      "command": "C:\\Users\\priya\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
-      "args": [
-        "C:\\Users\\priya\\OneDrive\\Desktop\\current\\MCP\\manim-mcp-server\\src\\manim_server.py"
-      ],
-      "env": {
-        "MANIM_EXECUTABLE": "C:\\Users\\priya\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\manim.exe"
-      }
-    },
     "twitter-mcp": {
       "transport": "stdio",
       "command": "npx",
@@ -45,7 +35,7 @@ SERVERS = {
         "fastmcp",
         "fastmcp",
         "run",
-        "C:\\Users\\priya\\OneDrive\\Desktop\\current\\MCP\\demo-server-1\\main.py"
+        "C:\\Users\\priya\\OneDrive\\Desktop\\Inxtinct\\DatabaseServer\\main.py",
       ]
     },
     "weather-server": {
@@ -59,7 +49,7 @@ SERVERS = {
         "httpx",
         "fastmcp",
         "run",
-        "C:\\Users\\priya\\OneDrive\\Desktop\\current\\MCP\\weather-server\\main.py"
+        "C:\\Users\\priya\\OneDrive\\Desktop\\Inxtinct\\WeatherServer\\main.py"
       ]
     }
 }
@@ -70,48 +60,92 @@ st.set_page_config(layout="wide", page_title="Inxtinct MCP Client")
 # Custom CSS for Dark Theme, No Rounded Corners, No Gradients
 st.markdown("""
 <style>
-    /* Force Dark Theme Backgrounds */
+    /* Force Dark Theme & Full Height */
     .stApp {
         background-color: #0e1117;
         color: #fafafa;
     }
     
-    /* Remove rounded corners from everything */
+    /* Remove rounding & standard Streamlit spacing */
     * {
         border-radius: 0px !important;
     }
+    .block-container {
+        padding-top: 2rem !important; /* Reduce top padding */
+        padding-bottom: 5rem !important; /* Space for bottom input */
+        max-width: 100% !important;
+    }
     
-    /* Remove gradients and shadows */
+    /* Remove gradients/shadows */
     .stChatInputContainer, div[data-testid="stChatMessage"] {
         box-shadow: none !important;
         background-image: none !important;
     }
     
-    /* Custom Styling for Chat Messages */
+    /* Chat Message Styling */
     div[data-testid="stChatMessage"] {
         border: 1px solid #333;
         background-color: #1a1c24;
+        margin-bottom: 1rem;
+        border-right: none;
+        border-left: none;
+        border-top: none;
     }
-    
-    /* Right Side Panel Styling */
+
+    /* 
+       LAYOUT ENGINE
+    */
+
+    /* LEFT COLUMN: CHAT (75%) */
+    div[data-testid="column"]:nth-of-type(1) {
+        /* Standard flow for Chat column */
+        margin-right: 0; 
+        width: 75% !important;
+        flex: none !important;
+        display: block !important;
+    }
+
+    /* RIGHT COLUMN: TOOLS (25%) */
     div[data-testid="column"]:nth-of-type(2) {
+        position: fixed !important;
+        right: 0;
+        top: 3.5rem; /* Match header height approx */
+        width: 25% !important;
+        height: calc(100vh - 3.5rem) !important;
+        background-color: #0e1117;
         border-left: 1px solid #333;
-        padding-left: 1rem;
+        padding: 1rem;
+        overflow-y: auto !important;
+        z-index: 99;
+    }
+
+    /* INPUT CONTAINER - The critical part */
+    div[data-testid="stBottom"] {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 25%; /* Stop at 75% width (100% - 25%) */
+        width: 75% !important; 
+        background-color: #0e1117;
+        z-index: 1000;
+        border-top: 1px solid #333;
     }
     
-    /* Input Box Styling */
+    /* Header cleanup */
+    header { 
+        background-color: #0e1117 !important;
+    }
+
+    /* Input & Button Styling */
     .stTextInput input, .stTextArea textarea {
         background-color: #1a1c24;
         border: 1px solid #333;
         color: white;
     }
-    
-    /* Button Styling */
     button {
         border: 1px solid #333;
         box-shadow: none !important;
     }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -234,16 +268,19 @@ with chat_col:
             st.markdown(message["content"])
 
     # Chat Input
-    if prompt := st.chat_input("Enter your prompt..."):
-        # Display User Message
+    # MOVED OUTSIDE OF COLUMN TO FORCE BOTTOM PINNING
+    pass
+
+# Main Chat Input (Pinned to Bottom via Streamlit Default + CSS Width Restriction)
+if prompt := st.chat_input("Enter your prompt..."):
+    # Display User Message
+    with chat_col: # Show message in Chat Column
         with st.chat_message("user"):
             st.markdown(prompt)
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        
-        # Variable to hold tool outputs for display
-        tool_outputs_display = []
-        
-        # Run Agent
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    
+    # Run Agent
+    with chat_col: # Show response in Chat Column
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
             message_placeholder.markdown("Thinking...")

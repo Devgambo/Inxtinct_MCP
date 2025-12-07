@@ -5,3 +5,6 @@ langchain-groq
 langchain-core
 fastmcp
 httpx
+fastapi
+uvicorn
+pydantic
